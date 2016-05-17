@@ -26,6 +26,8 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.hardware.Camera;
+//import android.graphics.Camera;
+//import android.hardware.camera2.*;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -70,6 +72,7 @@ public final class BarcodeCaptureActivity extends AppCompatActivity {
     public static final String AutoFocus = "AutoFocus";
     public static final String UseFlash = "UseFlash";
     public static final String BarcodeObject = "Barcode";
+    public static final String BarcodesObject = "Barcodes";
 
     private CameraSource mCameraSource;
     private CameraSourcePreview mPreview;
@@ -333,6 +336,52 @@ public final class BarcodeCaptureActivity extends AppCompatActivity {
      * @return true if the activity is ending.
      */
     private boolean onTap(float rawX, float rawY) {
+
+        //TODO: use the tap position to select the barcode.
+        BarcodeGraphic graphic = mGraphicOverlay.getFirstGraphic();
+        Barcode barcode = null;
+        java.util.Set<BarcodeGraphic> mGraph = mGraphicOverlay.getGraphics();
+        java.util.Set<Barcode> barcodes = new java.util.HashSet<>();
+        Intent data = new Intent();
+
+
+        if(mGraph != null) {
+            java.util.Iterator<BarcodeGraphic> mItr = mGraph.iterator();
+            while(mItr.hasNext()) {
+                BarcodeGraphic grp = mItr.next();
+                if(grp.getBarcode()!=null) {
+                    barcodes.add(grp.getBarcode());
+                }
+            }
+            if(!barcodes.isEmpty()) {
+                data.putExtra(BarcodesObject, barcode);
+            }
+        }
+        else {
+            Log.d(TAG,"no barcodes detected");
+        }
+
+        if (graphic != null) {
+            barcode = graphic.getBarcode();
+            if (barcode != null) {
+                data.putExtra(BarcodeObject, barcode);
+            }
+            else {
+                Log.d(TAG, "barcode data is null");
+            }
+        }
+        else {
+            Log.d(TAG,"no barcode detected");
+        }
+//        return barcode != null;
+        if(data.getExtras() != null) {
+            setResult(CommonStatusCodes.SUCCESS, data);
+            finish();
+        } else data = null;
+        return data != null;
+    }
+
+    private boolean onTap1(float rawX, float rawY) {
 
         //TODO: use the tap position to select the barcode.
         BarcodeGraphic graphic = mGraphicOverlay.getFirstGraphic();
