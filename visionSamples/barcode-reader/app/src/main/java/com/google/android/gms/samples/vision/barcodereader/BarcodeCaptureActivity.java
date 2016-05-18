@@ -346,19 +346,29 @@ public final class BarcodeCaptureActivity extends AppCompatActivity {
 
 
         if(mGraph != null) {
+            String str = "";
             java.util.Iterator<BarcodeGraphic> mItr = mGraph.iterator();
             while(mItr.hasNext()) {
                 BarcodeGraphic grp = mItr.next();
                 if(grp.getBarcode()!=null) {
                     barcodes.add(grp.getBarcode());
+                    str += grp.getBarcode().displayValue;
+                    str += "\r\n";
                 }
             }
-            if(!barcodes.isEmpty()) {
+            if(!str.isEmpty()) data.putExtra(BarcodesObject, str);
+
+            /*if(!barcodes.isEmpty()) {
                 data.putExtra(BarcodesObject, barcode);
-            }
+            }*/
         }
         else {
             Log.d(TAG,"no barcodes detected");
+        }
+        if(data.getExtras() != null) {
+            setResult(CommonStatusCodes.SUCCESS, data);
+            finish();
+            return data != null;
         }
 
         if (graphic != null) {

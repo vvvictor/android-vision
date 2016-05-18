@@ -101,10 +101,25 @@ public class MainActivity extends Activity implements View.OnClickListener {
         if (requestCode == RC_BARCODE_CAPTURE) {
             if (resultCode == CommonStatusCodes.SUCCESS) {
                 if (data != null) {
-                    Barcode barcode = data.getParcelableExtra(BarcodeCaptureActivity.BarcodeObject);
-                    statusMessage.setText(R.string.barcode_success);
-                    barcodeValue.setText(barcode.displayValue);
-                    Log.d(TAG, "Barcode read: " + barcode.displayValue);
+//                    java.util.Set<Barcode> barcodes = data.getParcelableExtra(BarcodeCaptureActivity.BarcodesObject);
+                    //String str = data.getParcelableExtra(BarcodeCaptureActivity.BarcodesObject);
+                    String str = data.getStringExtra(BarcodeCaptureActivity.BarcodesObject);
+//                    if(barcodes == null) {
+                    if(str.isEmpty()) {
+                        Barcode barcode = data.getParcelableExtra(BarcodeCaptureActivity.BarcodeObject);
+                        statusMessage.setText(R.string.barcode_success);
+                        barcodeValue.setText(barcode.displayValue);
+                        Log.d(TAG, "Barcode read: " + barcode.displayValue);
+                    } else {
+                        /*String bff = "";
+                        java.util.Iterator<Barcode> itr = barcodes.iterator();
+                        while(itr.hasNext()) {
+                            bff += itr.next().displayValue;
+                            bff += "\r\n";
+                        }*/
+                        barcodeValue.setText(str);
+                        Log.d(TAG, "Barcodes read: " + barcodeValue.getText());
+                    }
                 } else {
                     statusMessage.setText(R.string.barcode_failure);
                     Log.d(TAG, "No barcode captured, intent data is null");
